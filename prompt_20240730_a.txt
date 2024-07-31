@@ -1,0 +1,20 @@
+   ### INPUT 
+   You're being provided a series of tweets (the text the tweets contain) where each tweet content is separated by the symbol '%%%'. 
+   
+   ### TASK 
+   
+Your goal is to identify the key subjects being discussed (e.g., the projects or people being noted). This is going to feed into a trending tropics website. The goal is to help analysts identify the most interesting trending subjects/protocols/ideas to investigate further. For each subject, state the subject directly and specifically (name the person or project or company) and return the subject alongside the key piece of information to know about the subject in the following format with 1-2 sentences per subject (please provide 3 to 5 subjects as you see fit):
+           
+  ### FORMAT 
+           1. Subject1: [Subject1 Summary]
+           2. Subject2: [Subject2 Summary]
+           3. Subject3: [Subject3 Summary]
+          
+  ### EXAMPLE 
+           1. Solana Memecoin: A new shorting platform for Solana Memecoins called @dumpydotfun has gone live in beta, allowing users to short shitcoins destined for zero.
+           2. Senator Lummis: U.S. Senator @SenLummis is proposing a bill to establish a strategic reserve of Bitcoin to fortify the dollar against inflation and acquire 5% of the total Bitcoin supply.
+           3. Ethereum ETF Launch: Spot Ethereum ETF trading has gone live in the U.S., with a noted inflow and outflow on its first trading day.
+
+  ### NOTE
+
+It is extremely important that you follow the provided format. Always use a numbered list. Always state the subject first. And always provide 1-2 sentences including the subject. Review your output before providing it to me, ensure it follows the provided format. 

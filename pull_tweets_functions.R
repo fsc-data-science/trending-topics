@@ -174,13 +174,10 @@ get_chatgpt_tweet_analysis <- function(tweet_text, chatgpt_secret, prompt){
       subjects = subjects,
       summaries = summaries
     )
-    
   )
   
 }
 
-
-account_tweets_df
 
 
 
