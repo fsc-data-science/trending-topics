@@ -1,4 +1,5 @@
 library(plumber)
+source("source_funcs_and_secrets.R")
 
 #* @apiTitle Trending Topics Pipeline AI
 #* @apiDescription Handles updates & interactions between the trending topics tables including APIs for pulling tweets and automated summaries.
