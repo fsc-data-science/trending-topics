@@ -1,5 +1,5 @@
 
-expected_token <- readLines("plumber_secret.txt")
+expected_token <- readLines("plumber-secret.txt")
 twitter_secret <- readLines("twitter-secret.txt")
 chatgpt_secret <- readLines("chatgpt-secret.txt")
 prompt <- {
