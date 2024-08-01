@@ -1,7 +1,35 @@
+library(httr)
+library(jsonlite)
+library(odbc)
 
+# Snowflake
+submitSnowflake <- function(query, creds){
+  
+  connection <- dbConnect(
+    odbc::odbc(),
+    .connection_string = paste0("Driver={",creds$driver,"}",
+                                ";Server={",creds$server_url,
+                                "};uid=",creds$username,
+                                ";role=",creds$role,
+                                ";pwd=",creds$password,
+                                ";warehouse=", creds$warehouse,
+                                ";database=", creds$database)
+  )
+  
+  output <- dbGetQuery(connection, query)
+  dbDisconnect(connection)
+  return(output)
+  
+}
+
+# Always gitignore credentials and keys
+# SECRETS (gitignored)
+snowflake_credentials <- jsonlite::read_json('snowflake-details.json')
 expected_token <- readLines("plumber-secret.txt")
 twitter_secret <- readLines("twitter-secret.txt")
 chatgpt_secret <- readLines("chatgpt-secret.txt")
+
+# Default Prompt 
 prompt <- {
   "
   ### INPUT 
@@ -24,7 +52,7 @@ Your goal is to identify the key subjects being discussed (e.g., the projects or
 It is extremely important that you follow the provided format. Always use a numbered list. Always state the subject first. And always provide 1-2 sentences including the subject. Review your output before providing it to me, ensure it follows the provided format. 
   "}
 
-
+# Twitter / AI Functions 
 get_twitter_user_id <- function(username, access_token) {
   url <- paste0("https://api.twitter.com/2/users/by/username/", username)
   response <- GET(url, add_headers(Authorization = paste("Bearer", access_token)))
@@ -128,17 +156,10 @@ pull_account_tweets <- function(account = NULL, id = NULL, twitter_secret, n = 1
     id = get_twitter_user_id(account, twitter_secret)$data$id
   }
   
-  account_timeline <- get_user_timeline(account_id, twitter_secret, n)
+  account_timeline <- get_user_timeline(id, twitter_secret, n)
   account_tweets_df <- extract_timeline_data(account, account_timeline$data)
-  tweet_text <- paste0(account_tweets_df$text, collapse = " %%% ")
   
-  return(
-    list(
-      raw_timeline = account_timeline,
-      tweets_tbl = account_tweets_df,
-      tweets_collapsed_text = tweet_text
-    )
-  )
+  return(account_tweets_df)
   
 }
 
