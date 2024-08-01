@@ -77,9 +77,10 @@ function(req){
     paste(values, collapse = ",")
   )
   
-  submitSnowflake(insert_query, creds)
+  submitSnowflake(insert_query, creds = snowflake_credentials)
   
-  res_ <- submitSnowflake("call datascience_dev.trending_topics.add_new_tweets()", creds)
+  res_ <- submitSnowflake("call datascience_dev.trending_topics.add_new_tweets()", creds = snowflake_credentials)
+  
   return(res_)
 }
 
@@ -87,12 +88,75 @@ function(req){
 #*@post /ai_summarize
 function(req){
   
-  tweet_text <- paste0(account_tweets_df$text, collapse = " %%% ")
+  unused_ <- submitSnowflake(query = {
+    " 
+    select 
+    t.CREATED_AT, t.DAY_, t.USERNAME,
+    t.TWEET_TEXT, t.TWEET_ID, 
+    t.USED_IN_SUMMARY, 
+    a.ECOSYSTEM
+    from 
+    datascience_dev.trending_topics.processed_tweets t left join datascience_dev.trending_topics.target_twitter_accounts a 
+    USING (USERNAME)
+    where used_in_summary = FALSE
+    "
+  }, creds = snowflake_credentials)
   
+  # for each ecosystem, each day - get a summary of tweets across accounts 
+  
+  unique_eco_days <- unique(unused_[, c("DAY_","ECOSYSTEM")] )
+  
+  for(i in 1:nrow(unique_eco_days)){
+    
+    temp_day <- unique_eco_days$DAY_[i]
+    temp_ecosystem <- unique_eco_days$ECOSYSTEM[i]
+    
+    temp_tweets <- unused_[
+      unused_$DAY_ == temp_day & 
+      unused_$ECOSYSTEM == temp_ecosystem, ]
+    
+    temp_ids_used <- temp_tweets$TWEET_ID
+    
+    tweet_text <- paste0(temp_tweets$TWEET_TEXT, collapse = " %%% ")
+    chat_topics <- chatgpt_id_topic(tweet_text, chatgpt_secret, prompt)
+    subjects <- get_subject(chat_topics)
+    subjects <- subjects[nchar(subjects)  > 0]
+    summaries <- get_summaries(chat_topics)
+    summaries <- summaries[nchar(summaries)  > 0]
+    
+    # update the IDs used as used
+    
+    update_query <- sprintf(
+      "UPDATE datascience_dev.trending_topics.processed_tweets 
+       SET used_in_summary = TRUE 
+       WHERE tweet_id IN (%s)",
+      paste0("'", temp_ids_used, "'", collapse = ",")
+    )
+    
+    submitSnowflake(update_query, creds = snowflake_credentials)
+    
+    # insert the ai summaries into their table 
+    
+    current_date <- format(Sys.Date(), "%Y%m%d")
+    summary_id <- paste(temp_day, temp_ecosystem, current_date, sep = "_")
+    
+    # Escape single quotes in text fields
+    subjects <- gsub("'", "''", subjects)
+    summaries <- gsub("'", "''", summaries)
+    
+    insert_query <- sprintf(
+      "INSERT INTO datascience_dev.trending_topics.ai_summary (day_, subject, summary, summary_id) 
+       VALUES ('%s', '%s', '%s', '%s')",
+      temp_day, subjects, summaries, summary_id
+    )
+    
+    for(j in insert_query){
+    submitSnowflake(j, creds = snowflake_credentials)
+    }
+    
+  }
   
 }
-
-
 
 # Programmatically alter your API
 #* @plumber
