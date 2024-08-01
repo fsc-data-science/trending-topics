@@ -94,9 +94,9 @@ extract_timeline_data <- function(account_name, timeline_data){
   lst_ <- lapply(timeline_data, function(x){
     data.frame(
       created_at = x[["created_at"]],
-      text = x[["text"]],
-      id = x[["id"]],
-      url = paste0("https://x.com/",account_name,"/status/",x[["id"]])
+      username = account_name,
+      tweet_text = x[["text"]],
+      twitter_id = x[["id"]]
     )
   })
   
