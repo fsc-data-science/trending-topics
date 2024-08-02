@@ -49,32 +49,7 @@ ui <- fluidPage(
   # App ----
   hr(),
   div(class = "appbody",
-  
-  div(class = 'description-bar',
-      fluidRow(
-        column(3, class = 'info-box',
-              HTML("<h4> Scour Crypto Twitter </h4>
-                   <p> Looking for the latest conversations across ecosystems </p>
-                   ")               
-               ),
-        column(3, class = 'info-box',
-               HTML("<h4>Use AI to Summarize </h4>
-                   <p>Across users in the ecosystem, we aggregate key topics</p>
-                   ")     
-               ),
-        column(3, class = 'info-box',
-               HTML("<h4>Monitor Trends Over the last week</h4>
-                   <p>Crypto topics over the last 7 days</p>
-                   ")  
-               ),
-        column(3, class = 'info-box',
-        HTML("<h4>WIP: Citing Sources</h4>
-                   <p>(SOON!) Click a subject to find the original tweets & join the conversation</p>
-                   ") 
-               
-               )
-        )
-      ),
+
   br(),
   div(class = "context-submit",
       fluidRow(
