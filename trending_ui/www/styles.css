@@ -1,0 +1,117 @@
+@import url('https://fonts.googleapis.com/css2?family=Inter:wght@400;700&display=swap');
+
+
+body {
+  color: black;
+  font-family: 'Inter', Sans-Serif;
+  margin: 0;
+  padding: 0;
+  font-weight: 400;
+}
+.container-fluid {
+  margin: 0;
+  padding: 0;
+}
+
+a:hover, a:active {
+  text-decoration: none;
+}
+
+.modal-body { 
+  height: 500px; 
+}
+
+.titlerow {
+  text-align: center;
+  background-color: #F7F8FA;
+  padding-left: 40px;
+  padding-right: 40px;
+}
+
+#applogo {
+  text-align: left;
+  padding-top: 20px;
+}
+
+#appname {
+  font-weight: 700px;
+  font-size: 1.6em;
+  padding-top: 5px;
+  
+}
+
+#sidelinks {
+  padding-top: 20px;
+  text-align: right;
+}
+
+.data-shares-link {
+  background-color: #6675FF;
+  color: white;
+  padding: 8px;
+  border-radius: 6px;
+  margin-top: 15px;
+}
+
+
+.appbody {
+  margin-right: 5%;
+  margin-left: 5%;
+}
+
+
+.title {
+  font-weight: 500;
+  font-size: 1.4em;
+  
+}
+
+.info-box {
+  border: 2px solid black;
+}
+
+.btns {
+  margin-top: 2%;
+}
+
+.clr {
+ margin-left: 5%;  
+}
+
+.context-submit .btn-category {
+        margin: 5px;
+        font-size: 2rem;
+    }
+.context-submit  {
+        display: flex;
+        justify-content: space-evenly;
+        flex-wrap: wrap;
+
+    }
+
+.content-area {
+        width: 60%;
+        max-height: 500px;
+        overflow-y: scroll;
+        margin: 0 auto;
+      }
+      .card {
+        border: 1px solid #ccc;
+        border-radius: 10px;
+        margin: 10px;
+        padding: 10px;
+        cursor: pointer;
+      }
+      .card-header {
+        display: flex;
+        justify-content: space-between;
+        font-weight: bold;
+        font-size: 1.5em;
+      }
+      .card-header .date {
+        font-size: 0.75em;
+      }
+      .card-body {
+        margin-top: 10px;
+        font-size: 1em;
+      }
