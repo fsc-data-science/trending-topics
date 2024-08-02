@@ -1,29 +1,35 @@
-library(plumber)
+---
+title: "Update Trending Topics"
+author: "Charliemarketplace"
+date: "`r Sys.Date()`"
+output: html_document
+---
+
+```{r}
+# libraries & functions here 
 source("source_funcs_and_secrets.R")
-
-#* @apiTitle Trending Topics Pipeline AI
-#* @apiDescription Handles updates & interactions between the trending topics tables including APIs for pulling tweets and automated summaries.
-
-#* Echo back the input
-#* @param msg The message to echo
-#* @get /echo
-function(msg = "") {
-    list(msg = paste0("The message is: '", msg, "'"))
-}
-
-#* Return the sum of two numbers
-#* @param a The first number to add
-#* @param b The second number to add
-#* @post /sum
-function(a, b) {
-    as.numeric(a) + as.numeric(b)
-}
+```
 
 
-#* Pull tweets of `target_twitter_accounts`, append to `raw_tweet_dump`, calls `add_new_tweets()` to append to `processed_tweets`.
-#* @post /pull_tweets 
-function(req){
-  
+# What this does
+
+On a schedule:
+
+ 1. Pulls `target_twitter_accounts` and calls `pull_account_tweets`.
+ 2. Dump dataframe form in `raw_tweet_dump`, call `add_new_tweets()` proc to clean & append to `processed_tweets`.
+ 3. Ingest unused tweets to call `chatgpt_id_topic` at the day-ecosystem level and get the `subjects` and `summaries`. 
+ 4. Update used tweets to `used_in_summary = TRUE` and insert into `ai_summary`.
+ 
+ Website (in-dev) offers a UI over the summaries that uses term frequency to link back to 
+ relevant tweets at the day-ecosystem level.
+
+# Pull Tweets
+
+START: `r Sys.time()`
+
+```{r, warning=FALSE, message=FALSE}
+
+
   target_accounts <- submitSnowflake(
     query = "select * from datascience_dev.trending_topics.target_twitter_accounts",
     creds = snowflake_credentials
@@ -58,14 +64,15 @@ function(req){
   
   res_ <- submitSnowflake("call datascience_dev.trending_topics.add_new_tweets()", creds = snowflake_credentials)
   
-  return(res_)
-}
+```
 
-#* Pulls tweets not yet summarized, groups by day, summarizes across them at the daily level, appends to `ai_summary`.
-#*@post /ai_summarize
-function(req){
-  
-  unused_ <- submitSnowflake(query = {
+INGEST: `r Sys.time()`
+
+# Summarize 
+
+```{r, message=FALSE, warning=FALSE}
+
+unused_ <- submitSnowflake(query = {
     " 
     select 
     t.CREATED_AT, t.DAY_, t.USERNAME,
@@ -133,12 +140,10 @@ function(req){
     
   }
   
-}
+```
 
-# Programmatically alter your API
-#* @plumber
-function(pr) {
-    pr %>%
-        # Overwrite the default serializer to return unboxed JSON
-        pr_set_serializer(serializer_unboxed_json())
-}
+SUMMARIZED: `r Sys.time()`
+
+# Done 
+
+You may now query `trending_topics.ai_summary`.
