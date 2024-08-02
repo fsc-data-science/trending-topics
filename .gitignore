@@ -51,3 +51,4 @@ twitter-secret.txt
 chatgpt-secret.txt
 plumber-secret.txt
 snowflake-details.json
+*.rds
