@@ -36,12 +36,12 @@ START: `r Sys.time()`
     )
   
   
-  # pulls latest 100 tweets for simplicity
+  # pulls latest 20 tweets for simplicity
   pull_list <- lapply(1:nrow(target_accounts), function(x){
     pull_account_tweets(account = target_accounts$USERNAME[x], 
                         id = target_accounts$TWITTER_ID[x],
                         twitter_secret = twitter_secret,
-                        n = 100)
+                        n = 20)
     
   })
   
@@ -137,6 +137,11 @@ unused_ <- submitSnowflake(query = {
     for(j in insert_query){
     submitSnowflake(j, creds = snowflake_credentials)
     }
+    
+    # finally, prune 
+    submitSnowflake(
+      "call datascience_dev.trending_topics.prune_summaries();", creds = snowflake_credentials
+    )
     
   }
   
