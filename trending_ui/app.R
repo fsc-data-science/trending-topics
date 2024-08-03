@@ -59,6 +59,7 @@ ui <- fluidPage(
         actionButton(inputId = 'l2s', label = "EVM/L2s", class = "btn-category"),
         actionButton(inputId = 'solana', label = "Solana", class = "btn-category"),
         actionButton(inputId = 'avalanche', label = "Avalanche", class = "btn-category"),
+        actionButton(inputId = 'polygon', label = "Polygon", class = "btn-category"),
         actionButton(inputId = 'aptos', label = "Aptos", class = "btn-category"),
         actionButton(inputId = 'axelar', label = "Axelar", class = "btn-category"),
         actionButton(inputId = 'sei', label = "Sei", class = "btn-category")
@@ -85,13 +86,14 @@ server <- function(input, output, session) {
 
   observeEvent(input$all, { updateTextInput(session, inputId = "custom_search", value = "") })
   observeEvent(input$bitcoin, { updateTextInput(session, inputId = "custom_search", value = "btc bitcoin proof of work satoshi") })
-  observeEvent(input$ethereum, { updateTextInput(session, inputId = "custom_search", value = "eth ethereum evm mainnet defi nfts") })
-  observeEvent(input$l2s, { updateTextInput(session, inputId = "custom_search", value = "arb arbitrum op optimism base layer-2 L2") })
-  observeEvent(input$solana, { updateTextInput(session, inputId = "custom_search", value = "sol solana raydium") })
+  observeEvent(input$ethereum, { updateTextInput(session, inputId = "custom_search", value = "eth ether ethereum evm mainnet defi nfts") })
+  observeEvent(input$l2s, { updateTextInput(session, inputId = "custom_search", value = "arb arbitrum op optimism base blast layer-2 L2") })
+  observeEvent(input$solana, { updateTextInput(session, inputId = "custom_search", value = "sol solana raydium jupiter jup") })
   observeEvent(input$avalanche, { updateTextInput(session, inputId = "custom_search", value = "avax avalanche subnets") })
-  observeEvent(input$aptos, { updateTextInput(session, inputId = "custom_search", value = "aptos apt move thala aries") })
+  observeEvent(input$polygon, { updateTextInput(session, inputId = "custom_search", value = "matic pol polygon") })
+  observeEvent(input$aptos, { updateTextInput(session, inputId = "custom_search", value = "aptos apt thala aries") })
   observeEvent(input$axelar, { updateTextInput(session, inputId = "custom_search", value = "squid axlusdc axl axelar") })
-  observeEvent(input$sei, { updateTextInput(session, inputId = "custom_search", value = "sei seiv2 sei EVM seiyans") })
+  observeEvent(input$sei, { updateTextInput(session, inputId = "custom_search", value = "sei seiv2 seiEVM seiyans") })
   
   selected_subject <- reactiveVal(NULL)
   view <- reactiveVal("overall")
