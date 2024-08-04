@@ -1,5 +1,6 @@
 source("global.R")
 library(shiny)
+library(shinyjs)
 
 ui <- fluidPage(
   useShinyjs(),
@@ -70,8 +71,11 @@ ui <- fluidPage(
            textInput("custom_search", "", value = "", width = "50%", 
                      placeholder = "Put your own keywords here to filter top 20 summaries")
     )
-  )
-  ,
+  ),
+  conditionalPanel(
+    condition = "output.view == 'subject'",
+    p("Click to open tweet in new window. Tweets identified by fuzzy keyword matching may not be a perfect match. Select a chain or All to go back.")
+  ),
   div(class = "content-area", 
       conditionalPanel(
         condition = "output.view == 'overall'",
@@ -196,10 +200,8 @@ server <- function(input, output, session) {
     tweet_rank <- rank_corpus(card_search, corpus_ = filter_latest_tweets$TWEET_TEXT, top_n = 20)
   
     tagList(
-      p("Click to open tweet in new window. Tweets identified by fuzzy keyword matching may not be a perfect match. Select a chain or All to go back."),
       h3(subj),
       h4(summ),
-      hr(),
       hr(),
     apply(X = filter_latest_tweets[tweet_rank, ], 1, function(x){
     generateTweetCard(x["USERNAME"], x["DAY_"], x["TWEET_TEXT"], x["TWEET_ID"])
