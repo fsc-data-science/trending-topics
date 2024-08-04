@@ -66,6 +66,7 @@ saveRDS(Sys.time(), 'last_run.rds')
 stopwords <- c("a", "the", "and", "of", "in", "on", "at", "for", "with", "about", "is", "to", "this", "that", "it", "by", "as", "an", "be", "are")
 
 preprocess_text <- function(text) {
+  text <- gsub("[[:punct:]]","", text)
   words <- tolower(text) %>%
     strsplit(split = " ") %>%
     unlist() %>%
@@ -108,9 +109,19 @@ rank_corpus <- function(search_text, corpus_, top_n = 10) {
 
 # Relevant UI Functions ----
 generateCard <- function(day, subject, summary) {
-  div(class = "card", 
-      onclick = sprintf("Shiny.setInputValue('card_clicked', {day: '%s', subject: '%s', summary: '%s'});", 
-                        day, subject, summary),
+  data <- list(
+    day = day,
+    subject = subject,
+    summary = summary
+  )
+  
+  # Convert the list to JSON and escape it for use in JavaScript
+  json_data <- jsonlite::toJSON(data, auto_unbox = TRUE)
+  escaped_json <- gsub("'", "\\\\'", json_data)
+  
+  div(
+    class = "card",
+    onclick = sprintf("Shiny.setInputValue('card_clicked', JSON.parse('%s'));", escaped_json),
       div(class = "card-header",
           span(class = "subject", subject),
           span(class = "date", day)
