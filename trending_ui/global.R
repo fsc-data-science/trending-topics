@@ -108,7 +108,9 @@ rank_corpus <- function(search_text, corpus_, top_n = 10) {
 
 # Relevant UI Functions ----
 generateCard <- function(day, subject, summary) {
-  div(class = "card",
+  div(class = "card", 
+      onclick = sprintf("Shiny.setInputValue('card_clicked', {day: '%s', subject: '%s', summary: '%s'});", 
+                        day, subject, summary),
       div(class = "card-header",
           span(class = "subject", subject),
           span(class = "date", day)
@@ -118,3 +120,30 @@ generateCard <- function(day, subject, summary) {
       )
   )
 }
+
+generateTweetCard <- function(username, date, tweet_text, tweet_id) {
+  div(
+    class = "tweet-card",
+    style = "border: 1px solid #e1e8ed; border-radius: 5px; padding: 10px; margin-bottom: 10px; cursor: pointer;",
+    onclick = sprintf("window.open('https://x.com/web/status/%s', '_blank');", tweet_id),
+    div(
+      class = "tweet-header",
+      style = "display: flex; justify-content: space-between; margin-bottom: 5px;",
+      span(
+        class = "username",
+        style = "font-weight: bold;",
+        username
+      ),
+      span(
+        class = "date",
+        style = "color: #657786;",
+        date
+      )
+    ),
+    div(
+      class = "tweet-body",
+      p(tweet_text)
+    )
+  )
+}
+

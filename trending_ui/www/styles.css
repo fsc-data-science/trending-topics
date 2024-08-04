@@ -78,6 +78,9 @@ a:hover, a:active {
  margin-left: 5%;  
 }
 
+ .shiny-output-error { font-size: 0 !important; }
+.shiny-output-error:before { font-size: 0 !important; }
+      
 .context-submit .btn-category {
         margin: 5px;
         font-size: 2rem;

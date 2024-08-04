@@ -1,9 +1,9 @@
 source("global.R")
 library(shiny)
-library(odbc)
-library(jsonlite)
 
 ui <- fluidPage(
+  useShinyjs(),
+  # pass clicks to general app
   
   # Headers ----
   tags$head(
@@ -76,7 +76,12 @@ ui <- fluidPage(
       conditionalPanel(
         condition = "output.view == 'overall'",
             uiOutput("cards")
+      ),
+      conditionalPanel(
+        condition = "output.view == 'subject'",
+        uiOutput("tweets")
       )
+      
   )
   )
   
@@ -84,16 +89,60 @@ ui <- fluidPage(
 
 server <- function(input, output, session) {
 
-  observeEvent(input$all, { updateTextInput(session, inputId = "custom_search", value = "") })
-  observeEvent(input$bitcoin, { updateTextInput(session, inputId = "custom_search", value = "btc bitcoin proof of work satoshi") })
-  observeEvent(input$ethereum, { updateTextInput(session, inputId = "custom_search", value = "eth ether ethereum evm mainnet defi nfts") })
-  observeEvent(input$l2s, { updateTextInput(session, inputId = "custom_search", value = "arb arbitrum op optimism base blast layer-2 L2") })
-  observeEvent(input$solana, { updateTextInput(session, inputId = "custom_search", value = "sol solana raydium jupiter jup") })
-  observeEvent(input$avalanche, { updateTextInput(session, inputId = "custom_search", value = "avax avalanche subnets") })
-  observeEvent(input$polygon, { updateTextInput(session, inputId = "custom_search", value = "matic pol polygon") })
-  observeEvent(input$aptos, { updateTextInput(session, inputId = "custom_search", value = "aptos apt thala aries") })
-  observeEvent(input$axelar, { updateTextInput(session, inputId = "custom_search", value = "squid axlusdc axl axelar") })
-  observeEvent(input$sei, { updateTextInput(session, inputId = "custom_search", value = "sei seiv2 seiEVM seiyans") })
+  clicked_card <- reactiveVal(NULL)
+  # 2nd copy so users can go back and then reclick same card as before 
+  card_clicked <- reactiveVal(NULL)
+  
+  observeEvent(input$card_clicked, {
+    clicked_card(input$card_clicked)
+    card_clicked(input$card_clicked)
+    x <<- card_clicked()
+    view("subject")
+    clicked_card(NULL)
+    updateTextInput(session, inputId = "custom_search", value = "")
+  })
+  
+  # all buttons bring back overall view ----
+  observeEvent(input$all, { 
+    updateTextInput(session, inputId = "custom_search", value = "")
+    view("overall")
+    })
+  observeEvent(input$bitcoin, { 
+    updateTextInput(session, inputId = "custom_search", value = "btc bitcoin proof of work satoshi")
+    view("overall") 
+    })
+  observeEvent(input$ethereum, { 
+    updateTextInput(session, inputId = "custom_search", value = "eth ether ethereum evm mainnet defi nfts")
+    view("overall")
+    })
+  observeEvent(input$l2s, { 
+    updateTextInput(session, inputId = "custom_search", value = "arb arbitrum op optimism base blast layer-2 L2")
+    view("overall")
+    })
+  observeEvent(input$solana, { 
+    updateTextInput(session, inputId = "custom_search", value = "sol solana raydium jupiter jup")
+    view("overall")
+    })
+  observeEvent(input$avalanche, { 
+    updateTextInput(session, inputId = "custom_search", value = "avax avalanche subnets")
+    view("overall")
+    })
+  observeEvent(input$polygon, { 
+    updateTextInput(session, inputId = "custom_search", value = "matic pol polygon")
+    view("overall")
+    })
+  observeEvent(input$aptos, { 
+    updateTextInput(session, inputId = "custom_search", value = "aptos apt thala aries")
+    view("overall")
+    })
+  observeEvent(input$axelar, { 
+    updateTextInput(session, inputId = "custom_search", value = "squid axlusdc axl axelar")
+    view("overall")
+    })
+  observeEvent(input$sei, { 
+    updateTextInput(session, inputId = "custom_search", value = "sei seiv2 seiEVM seiyans")
+    view("overall")
+    })
   
   selected_subject <- reactiveVal(NULL)
   view <- reactiveVal("overall")
@@ -102,6 +151,8 @@ server <- function(input, output, session) {
     view()
   })
   outputOptions(output, "view", suspendWhenHidden = FALSE)
+  # /all ----
+  # Cards ----
   
   output$cards <- renderUI({
     
@@ -113,11 +164,50 @@ server <- function(input, output, session) {
     } else {
       filter_ai_summaries <- latest_ai_summaries
     }
-    
+   tagList(
+     br(),
     apply(X = filter_ai_summaries, MARGIN = 1, function(x){
       generateCard(x["DAY_"], x["SUBJECT"], x["SUMMARY"])
      })
+   )
   })
+  
+  output$tweets <- renderUI({
+    card_search <- card_clicked()
+    subj <- card_search$subject
+    summ <- card_search$summary
+    
+    card_search <- paste0( c(card_search$subject, card_search$summary), collapse = " ")
+    
+    # require at least 1 word in subject
+    filter_latest_tweets <- latest_tweets[grepl(pattern = paste0(unlist(strsplit(subj, split = " ")), collapse = "|"), latest_tweets$TWEET_TEXT, ignore.case = TRUE), ]
+    
+    if(nchar(input$custom_search) > 3){
+      
+      summary_rank <- rank_corpus(input$custom_search, corpus_ = filter_latest_tweets$TWEET_TEXT, top_n = 40)
+      filter_latest_tweets <- filter_latest_tweets[summary_rank, ]
+        
+    } 
+    
+    if(nrow(filter_latest_tweets) == 0){
+      filter_latest_tweets <- latest_tweets
+    }
+    
+    tweet_rank <- rank_corpus(card_search, corpus_ = filter_latest_tweets$TWEET_TEXT, top_n = 20)
+  
+    tagList(
+      p("Click to open tweet in new window. Tweets identified by fuzzy keyword matching may not be a perfect match. Select a chain or All to go back."),
+      h3(subj),
+      h4(summ),
+      hr(),
+      hr(),
+    apply(X = filter_latest_tweets[tweet_rank, ], 1, function(x){
+    generateTweetCard(x["USERNAME"], x["DAY_"], x["TWEET_TEXT"], x["TWEET_ID"])
+    })
+    
+    )
+  })
+  
   
 }
 
