@@ -117,8 +117,15 @@ generateCard <- function(day, subject, summary) {
   
   # Convert the list to JSON and escape it for use in JavaScript
   json_data <- jsonlite::toJSON(data, auto_unbox = TRUE)
-  escaped_json <- gsub("'", "\\\\'", json_data)
-  escaped_json <- gsub('"', '\\\\"', json_data)
+  # First, escape backslashes
+  escaped_json <- gsub("\\", "\\\\", json_data, fixed = TRUE)
+  
+  # escape double quotes
+  escaped_json <- gsub('"', '\\"', escaped_json, fixed = TRUE)
+  
+  # escape single quotes
+  escaped_json <- gsub("'", "\\'", escaped_json, fixed = TRUE)
+  
   
   div(
     class = "card",
