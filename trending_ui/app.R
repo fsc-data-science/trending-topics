@@ -97,6 +97,27 @@ server <- function(input, output, session) {
   # 2nd copy so users can go back and then reclick same card as before 
   card_clicked <- reactiveVal(NULL)
   
+  initial_search <- reactive({
+    query <- parseQueryString(session$clientData$url_search)
+    if (!is.null(query[['search']])) {
+      return(query[['search']])
+    }
+    return("")
+  })
+  
+  # Set initial value
+  observe({
+    updateTextInput(session, "custom_search", value = initial_search())
+  })
+  
+  # Update URL when search changes (optional, for two-way functionality)
+  observeEvent(input$custom_search, {
+    search_term <- input$custom_search
+    if (search_term != initial_search()) {
+      updateQueryString(paste0("?search=", URLencode(search_term)), mode = "replace")
+    }
+  }, ignoreInit = TRUE)
+  
   observeEvent(input$card_clicked, {
     clicked_card(input$card_clicked)
     card_clicked(input$card_clicked)
