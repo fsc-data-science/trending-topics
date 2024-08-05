@@ -92,29 +92,34 @@ a:hover, a:active {
 
     }
 
+.content-area-no-scroll {
+  width: 60%;
+margin: 0 auto;
+}
+
 .content-area {
         width: 60%;
-        max-height: 500px;
+        max-height: 800px;
         overflow-y: scroll;
         margin: 0 auto;
       }
-      .card {
-        border: 1px solid #ccc;
-        border-radius: 10px;
-        margin: 10px;
-        padding: 10px;
-        cursor: pointer;
-      }
-      .card-header {
-        display: flex;
-        justify-content: space-between;
-        font-weight: bold;
-        font-size: 1.5em;
-      }
-      .card-header .date {
-        font-size: 0.75em;
-      }
-      .card-body {
-        margin-top: 10px;
-        font-size: 1em;
-      }
+.card {
+  border: 1px solid #ccc;
+  border-radius: 10px;
+  margin: 10px;
+  padding: 10px;
+  cursor: pointer;
+}
+.card-header {
+  display: flex;
+  justify-content: space-between;
+  font-weight: bold;
+  font-size: 1.5em;
+}
+.card-header .date {
+  font-size: 0.75em;
+}
+.card-body {
+  margin-top: 10px;
+  font-size: 1em;
+}

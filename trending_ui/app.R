@@ -74,8 +74,17 @@ ui <- fluidPage(
   ),
   conditionalPanel(
     condition = "output.view == 'subject'",
-    p("Click to open tweet in new window. Tweets identified by fuzzy keyword matching may not be a perfect match. Select a chain or All to go back.")
+    div(class = "content-area-no-scroll", 
+        p("Click to open tweet in new window. Tweets identified by fuzzy keyword matching may not be a perfect match. Select a chain or All to go back.")
+    )
   ),
+  conditionalPanel(
+    condition = "output.view == 'overall'",
+    div(class = "content-area-no-scroll", 
+        p("AI generated summaries aggregated across twitter at the day-ecosystem level. Select to view correlated tweets.")
+    )
+  ),
+  
   div(class = "content-area", 
       conditionalPanel(
         condition = "output.view == 'overall'",
