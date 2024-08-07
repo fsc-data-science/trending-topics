@@ -18,7 +18,7 @@ ui <- fluidPage(
            column(width = 3, div(id = "applogo", 
                                  a(href = "https://flipsidecrypto.xyz",
                                    img(src = "Flipside_black_logo_wordmark.svg", height = "24px"),
-                                   onclick = paste0("rudderanalytics.track('", 'ai_submit', "_flipside')"),
+                                   onclick = paste0("rudderanalytics.track('", "trending", "_flipside')"),
                                    target = "_blank"))
             ),
            column(width = 6,
@@ -28,20 +28,20 @@ ui <- fluidPage(
            column(width = 3,
                   div(id = "sidelinks",
                       a(href = "https://flipsidecrypto.xyz/pricing", 
-                        class = "data-shares-link", 
+                        class = "pro-link", 
                         img(src = "Flipside_icon_white.svg", height = "14px"), 
                         "Flipside Pro",
-                        onclick = paste0("rudderanalytics.track('",  'ai_submit', "_enterprise')"),
+                        onclick = paste0("rudderanalytics.track('",  'trending', "_enterprise')"),
                         target = "_blank"),
                       a(href = "https://twitter.com/flipsidecrypto", 
                         img(src = "twitter.svg", height = "14px"),
                         style = "margin-left: 15px",
-                        onclick = paste0("rudderanalytics.track('",  'ai_submit', "_twitter')"),
+                        onclick = paste0("rudderanalytics.track('",  'trending', "_twitter')"),
                         target = "_blank"),
                       a(href = "https://discord.com/invite/ZmU3jQuu6W", 
                         img(src = "discord.svg", height = "14px"),
                         style = "margin-left: 15px",
-                        onclick = paste0("rudderanalytics.track('",  'ai_submit', "_discord')"),
+                        onclick = paste0("rudderanalytics.track('",  'trending', "_discord')"),
                         target = "_blank")
                   )
            )

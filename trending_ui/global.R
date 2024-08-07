@@ -103,10 +103,6 @@ rank_corpus <- function(search_text, corpus_, top_n = 10) {
   return(top_corpus)
 }
 
-
-
-
-
 # Relevant UI Functions ----
 generateCard <- function(day, subject, summary) {
   data <- list(
