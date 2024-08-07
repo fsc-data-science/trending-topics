@@ -10,7 +10,8 @@ ui <- fluidPage(
   tags$head(
     title = "Flipside Crypto's Trending Topics",
     tags$link(rel = "stylesheet", type = "text/css", href = "styles.css"),
-    tags$link(rel = "icon", href = "fliptrans.png")
+    tags$link(rel = "icon", href = "fliptrans.png"),
+    tags$script(src = "rudderstack.js"),
   ),
   
   # top row ----
@@ -54,16 +55,40 @@ ui <- fluidPage(
   br(),
   div(class = "context-submit",
       fluidRow(
-        actionButton(inputId = 'all', label = "All", class = "btn-category"),
-        actionButton(inputId = 'bitcoin', label = "Bitcoin", class = "btn-category"),
-        actionButton(inputId = 'ethereum', label = "Ethereum", class = "btn-category"),
-        actionButton(inputId = 'l2s', label = "EVM/L2s", class = "btn-category"),
-        actionButton(inputId = 'solana', label = "Solana", class = "btn-category"),
-        actionButton(inputId = 'avalanche', label = "Avalanche", class = "btn-category"),
-        actionButton(inputId = 'polygon', label = "Polygon", class = "btn-category"),
-        actionButton(inputId = 'aptos', label = "Aptos", class = "btn-category"),
-        actionButton(inputId = 'axelar', label = "Axelar", class = "btn-category"),
-        actionButton(inputId = 'sei', label = "Sei", class = "btn-category")
+        actionButton(
+          onclick = "rudderanalytics.track('trending_all')",
+          inputId = 'all', label = "All", class = "btn-category"
+          ),
+        actionButton(
+          onclick = "rudderanalytics.track('trending_bitcoin')",
+          inputId = 'bitcoin', label = "Bitcoin", class = "btn-category"),
+        actionButton(
+          onclick = "rudderanalytics.track('trending_ethereum')",
+          inputId = 'ethereum', label = "Ethereum", class = "btn-category"),
+        actionButton(
+          onclick = "rudderanalytics.track('trending_evml2s')",
+          inputId = 'l2s', label = "EVM/L2s", class = "btn-category"),
+        actionButton(
+          onclick = "rudderanalytics.track('trending_solana')",
+          inputId = 'solana', label = "Solana", class = "btn-category"),
+        actionButton(
+          onclick = "rudderanalytics.track('trending_avalanche')",
+          inputId = 'avalanche', label = "Avalanche", class = "btn-category"),
+        actionButton(
+          onclick = "rudderanalytics.track('trending_polygon')",
+          inputId = 'polygon', label = "Polygon", class = "btn-category"),
+        actionButton(
+          onclick = "rudderanalytics.track('trending_aptos')",
+          inputId = 'aptos', label = "Aptos", class = "btn-category"),
+        actionButton(
+          onclick = "rudderanalytics.track('trending_near')",
+          inputId = 'near', label = "Near", class = "btn-category"),
+        actionButton(
+          onclick = "rudderanalytics.track('trending_axelar')",
+          inputId = 'axelar', label = "Axelar", class = "btn-category"),
+        actionButton(
+          onclick = "rudderanalytics.track('trending_sei)",
+          inputId = 'sei', label = "Sei", class = "btn-category")
       )
       ),
   fluidRow(
@@ -139,6 +164,7 @@ server <- function(input, output, session) {
   # all buttons bring back overall view ----
   observeEvent(input$all, { 
     updateTextInput(session, inputId = "custom_search", value = "")
+    
     view("overall")
     })
   observeEvent(input$bitcoin, { 
@@ -169,6 +195,10 @@ server <- function(input, output, session) {
     updateTextInput(session, inputId = "custom_search", value = "aptos apt thala aries")
     view("overall")
     })
+  observeEvent(input$near, { 
+  updateTextInput(session, inputId = "custom_search", value = "near aurora sweat near.ai horizon")
+  view("overall")
+  })
   observeEvent(input$axelar, { 
     updateTextInput(session, inputId = "custom_search", value = "squid axlusdc axl axelar")
     view("overall")
