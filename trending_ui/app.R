@@ -12,6 +12,7 @@ ui <- fluidPage(
     tags$link(rel = "stylesheet", type = "text/css", href = "styles.css"),
     tags$link(rel = "icon", href = "fliptrans.png"),
     tags$script(src = "rudderstack.js"),
+    tags$script("rudderanalytics.page('trending')")
   ),
   
   # top row ----
