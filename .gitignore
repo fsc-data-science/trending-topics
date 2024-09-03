@@ -52,3 +52,4 @@ chatgpt-secret.txt
 plumber-secret.txt
 snowflake-details.json
 *.rds
+trending_topics/claude-secret.txt
