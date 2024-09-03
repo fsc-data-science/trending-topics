@@ -41,7 +41,7 @@ START: `r Sys.time()`
     pull_account_tweets(account = target_accounts$USERNAME[x], 
                         id = target_accounts$TWITTER_ID[x],
                         twitter_secret = twitter_secret,
-                        n = 20)
+                        n = 10)
     
   })
   
@@ -102,7 +102,7 @@ unused_ <- submitSnowflake(query = {
     temp_ids_used <- temp_tweets$TWEET_ID
     
     tweet_text <- paste0(temp_tweets$TWEET_TEXT, collapse = " %%% ")
-    chat_topics <- chatgpt_id_topic(tweet_text, chatgpt_secret, prompt)
+    chat_topics <- claude_id_topic(tweet_text, claude_secret, prompt)
     subjects <- get_subject(chat_topics)
     subjects <- subjects[nchar(subjects)  > 0]
     summaries <- get_summaries(chat_topics)

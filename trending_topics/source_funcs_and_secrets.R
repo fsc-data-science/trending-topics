@@ -27,6 +27,7 @@ submitSnowflake <- function(query, creds){
 snowflake_credentials <- jsonlite::read_json('snowflake-details.json')
 twitter_secret <- readLines("twitter-secret.txt")
 chatgpt_secret <- readLines("chatgpt-secret.txt")
+claude_secret <- readLines("claude-secret.txt")
 
 # Default Prompt 
 prompt <- {
@@ -42,14 +43,15 @@ Your goal is to identify the key subjects being discussed (e.g., the projects or
            2. Subject2: [Subject2 Summary]
            3. Subject3: [Subject3 Summary]
           
-  ### EXAMPLE 
+  ### EXAMPLE RESPONSE
            1. Solana Memecoin: A new shorting platform for Solana Memecoins called @dumpydotfun has gone live in beta, allowing users to short shitcoins destined for zero.
            2. Senator Lummis: U.S. Senator @SenLummis is proposing a bill to establish a strategic reserve of Bitcoin to fortify the dollar against inflation and acquire 5% of the total Bitcoin supply.
            3. Ethereum ETF Launch: Spot Ethereum ETF trading has gone live in the U.S., with a noted inflow and outflow on its first trading day.
 
   ### NOTE
-It is extremely important that you follow the provided format. Always use a numbered list. Always state the subject first. And always provide 1-2 sentences including the subject. Review your output before providing it to me, ensure it follows the provided format. 
-  "}
+It is extremely important that you follow the provided format. Always use a numbered list. Always state the subject first. And always provide 1-2 sentences including the subject. Review your output before providing it to me, ensure it follows the provided format. Please do not include ANY preface text like 'based on the provided...'. Return only the resulting list, with a single new line per item.
+  "
+  }
 
 # Twitter / AI Functions 
 get_twitter_user_id <- function(username, access_token) {
@@ -130,6 +132,33 @@ chatgpt_id_topic <- function(tweet_text, chatgpt_secret, prompt){
   return(response_content$choices[[1]]$message$content)
 }
 
+# Migrating to Claude 
+claude_id_topic <- function(tweet_text, claude_api_key, prompt) {
+  request_body <- list(
+    model = "claude-3-5-sonnet-20240620",
+    messages = list(
+      list(role = "user", 
+           content = paste0(prompt, tweet_text))
+    ),
+    max_tokens = 1024
+  )
+  
+  response <- POST(
+    url = "https://api.anthropic.com/v1/messages",
+    add_headers(
+      `Content-Type` = "application/json",
+      `x-api-key` = claude_api_key,
+      `anthropic-version` = "2023-06-01"
+    ),
+    body = toJSON(request_body, auto_unbox = TRUE),
+    encode = "json"
+  )
+  
+  # Check the response
+  response_content <- content(response)
+  return(response_content$content[[1]]$text)
+}
+
 
 get_subject <- function(chat_topics){
   gsub("[0-9]+\\. |:.*","",  unlist(strsplit(chat_topics, "\n")))
@@ -176,4 +205,21 @@ get_chatgpt_tweet_analysis <- function(tweet_text, chatgpt_secret, prompt){
   )
   
 }
+
+get_claude_tweet_analysis <- function(tweet_text, chatgpt_secret, prompt){
+  chat_topics <- claude_id_topic(tweet_text, chatgpt_secret, prompt)
+  subjects <- get_subject(chat_topics)
+  summaries <- get_summaries(chat_topics)
+  
+  return(
+    list(
+      raw_chat_response = chat_topics,
+      subjects = subjects,
+      summaries = summaries
+    )
+  )
+  
+}
+
+
 
