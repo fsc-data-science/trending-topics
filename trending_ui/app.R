@@ -58,8 +58,7 @@ ui <- fluidPage(
       fluidRow(
         actionButton(
           onclick = "rudderanalytics.track('trending_all')",
-          inputId = 'all', label = "All", class = "btn-category"
-          ),
+          inputId = 'all', label = "All", class = "btn-category"),
         actionButton(
           onclick = "rudderanalytics.track('trending_bitcoin')",
           inputId = 'bitcoin', label = "Bitcoin", class = "btn-category"),
@@ -89,8 +88,17 @@ ui <- fluidPage(
           inputId = 'axelar', label = "Axelar", class = "btn-category"),
         actionButton(
           onclick = "rudderanalytics.track('trending_sei)",
-          inputId = 'sei', label = "Sei", class = "btn-category")
-      )
+          inputId = 'sei', label = "Sei", class = "btn-category"),
+        actionButton(
+            onclick = "rudderanalytics.track('trending_kaia)",
+            inputId = 'kaia', label = "Kaia", class = "btn-category"),
+      actionButton(
+        onclick = "rudderanalytics.track('trending_bera)",
+        inputId = 'bera', label = "Berachain", class = "btn-category"),
+      actionButton(
+        onclick = "rudderanalytics.track('trending_flow)",
+        inputId = 'flow', label = "Flow", class = "btn-category")
+        )
       ),
   fluidRow(
     column(12, align = "center",
@@ -208,6 +216,18 @@ server <- function(input, output, session) {
     updateTextInput(session, inputId = "custom_search", value = "sei seiv2 seiEVM seiyans")
     view("overall")
     })
+  observeEvent(input$kaia, { 
+    updateTextInput(session, inputId = "custom_search", value = "kaia klaytn")
+    view("overall")
+  })
+  observeEvent(input$bera, { 
+    updateTextInput(session, inputId = "custom_search", value = "bera berabaddies bex thoon bgt honey")
+    view("overall")
+  })
+  observeEvent(input$flow, { 
+    updateTextInput(session, inputId = "custom_search", value = "flow dapper topshot nba nfl disney pins")
+    view("overall")
+  })
   
   selected_subject <- reactiveVal(NULL)
   view <- reactiveVal("overall")
