@@ -43,7 +43,7 @@ Your goal is to identify the key subjects being discussed (e.g., the projects or
            2. Subject2: [Subject2 Summary]
            3. Subject3: [Subject3 Summary]
           
-  ### EXAMPLE RESPONSE
+  ### EXAMPLE RESPONSE (do not duplicate in your response, this is just to show you the format)
            1. Solana Memecoin: A new shorting platform for Solana Memecoins called @dumpydotfun has gone live in beta, allowing users to short shitcoins destined for zero.
            2. Senator Lummis: U.S. Senator @SenLummis is proposing a bill to establish a strategic reserve of Bitcoin to fortify the dollar against inflation and acquire 5% of the total Bitcoin supply.
            3. Ethereum ETF Launch: Spot Ethereum ETF trading has gone live in the U.S., with a noted inflow and outflow on its first trading day.
@@ -135,7 +135,7 @@ chatgpt_id_topic <- function(tweet_text, chatgpt_secret, prompt){
 # Migrating to Claude 
 claude_id_topic <- function(tweet_text, claude_api_key, prompt) {
   request_body <- list(
-    model = "claude-3-5-sonnet-20240620",
+    model = "claude-3-haiku-20240307",
     messages = list(
       list(role = "user", 
            content = paste0(prompt, tweet_text))
