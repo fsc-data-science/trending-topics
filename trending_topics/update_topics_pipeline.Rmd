@@ -103,6 +103,7 @@ unused_ <- submitSnowflake(query = {
     
     tweet_text <- paste0(temp_tweets$TWEET_TEXT, collapse = " %%% ")
     chat_topics <- claude_id_topic(tweet_text, claude_secret, prompt)
+    chat_topics <- claude_id_topic(chat_topics, claude_secret, fundamentally_interesting_prompt)
     subjects <- get_subject(chat_topics)
     subjects <- subjects[nchar(subjects)  > 0]
     summaries <- get_summaries(chat_topics)
