@@ -222,7 +222,7 @@ chatgpt_id_topic <- function(tweet_text, chatgpt_secret, prompt){
 # Migrating to Claude 
 claude_id_topic <- function(tweet_text, claude_api_key, prompt) {
   request_body <- list(
-    model = "claude-3-haiku-20240307",
+    model = "claude-3-5-sonnet-20240620",
     max_tokens = 1024,
     system = list(
       list(
